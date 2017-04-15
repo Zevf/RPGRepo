@@ -6,12 +6,17 @@ using System.Threading.Tasks;
 
 namespace RPG_Source
 {
-    public class Player
+    public class Player: Mobs
     {
-        public int CHP { get; set; }
-        public int MHP { get; set; }
         public int Gold { get; set; }
         public int Exp { get; set; }
         public int Lvl { get; set; }
+
+        public Player(int mhp, int chp, int gold, int exp, int lvl): base(mhp,chp)
+        {
+            Gold = gold;
+            Exp = exp;
+            Lvl = lvl;
+        }
     }
 }
