@@ -152,9 +152,9 @@
             // 
             // buttonUseWeapon
             // 
-            this.buttonUseWeapon.Location = new System.Drawing.Point(744, 544);
+            this.buttonUseWeapon.Location = new System.Drawing.Point(744, 534);
             this.buttonUseWeapon.Name = "buttonUseWeapon";
-            this.buttonUseWeapon.Size = new System.Drawing.Size(75, 31);
+            this.buttonUseWeapon.Size = new System.Drawing.Size(75, 41);
             this.buttonUseWeapon.TabIndex = 11;
             this.buttonUseWeapon.Text = "Swing!";
             this.buttonUseWeapon.UseVisualStyleBackColor = true;
@@ -172,9 +172,9 @@
             // 
             // buttonUsePotion
             // 
-            this.buttonUsePotion.Location = new System.Drawing.Point(744, 593);
+            this.buttonUsePotion.Location = new System.Drawing.Point(744, 581);
             this.buttonUsePotion.Name = "buttonUsePotion";
-            this.buttonUsePotion.Size = new System.Drawing.Size(75, 31);
+            this.buttonUsePotion.Size = new System.Drawing.Size(75, 43);
             this.buttonUsePotion.TabIndex = 13;
             this.buttonUsePotion.Text = "Potion";
             this.buttonUsePotion.UseVisualStyleBackColor = true;
