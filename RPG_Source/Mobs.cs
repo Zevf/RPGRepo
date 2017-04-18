@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+//This is used to understand Inheritance by delcaring Max HP and Current HP in this class and calling it to both the Player and Enemy
 namespace RPG_Source
 {
     public class Mobs

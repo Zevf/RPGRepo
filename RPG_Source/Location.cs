@@ -20,11 +20,14 @@ namespace RPG_Source
         public Location ToWest { get; set; }
 
 
-        public Location(int id, string name, string description)
+        public Location(int id, string name, string description, Item keyItem = null, Quest getQuest = null, Enemy getEnemy = null)
         {
             ID = id;
             Name = name;
             Description = description;
+            KeyItem = keyItem;
+            GetEnemy = getEnemy;
+            GetQuest = getQuest;
         }
     }
 }
