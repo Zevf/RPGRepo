@@ -60,7 +60,7 @@ namespace RPG_Source
         //methods that are being used to populate the world, each named after items, Enemies, Quests, and Locals.
         private static void PopulateItems()
         {
-            Items.Add(new Weapon(ITEM_ID_WOODEN_SWORD, 5, 0, "Rusty sword", "Rusty swords"));
+            Items.Add(new Weapon(ITEM_ID_WOODEN_SWORD, 5, 0, "Wooden sword", "Wooden swords"));
             Items.Add(new Weapon(ITEM_ID_CLUB, 10, 3, "Club", "Clubs"));
             Items.Add(new Weapon(ITEM_ID_SWORD, 15, 10, "Steel Sword", "Steel Swords"));
             Items.Add(new Item(ITEM_ID_RTAIL, "Rat tail", "Rat tails"));
@@ -79,9 +79,10 @@ namespace RPG_Source
             rat.RewardItem.Add(new LootItem(ItemByID(ITEM_ID_RTAIL), 75, false));
             rat.RewardItem.Add(new LootItem(ItemByID(ITEM_ID_FUR), 75, true));
 
-            Enemy snake = new Enemy(ENEMY_ID_SNAKE, "Snake", 3, 10, 5, 3, 3);
+            Enemy snake = new Enemy(ENEMY_ID_SNAKE, "Snake", 3, 10, 5, 8, 8);
             snake.RewardItem.Add(new LootItem(ItemByID(ITEM_ID_SNAKE_FANG), 75, false));
             snake.RewardItem.Add(new LootItem(ItemByID(ITEM_ID_SNAKESKIN), 75, true));
+            snake.RewardItem.Add(new LootItem(ItemByID(ITEM_ID_CLUB), 25, false));
 
             Enemy gSpider = new Enemy(ENEMY_ID_GSPIDER, "Giant spider", 5, 40, 20, 10, 10);
             gSpider.RewardItem.Add(new LootItem(ItemByID(ITEM_ID_SPIDER_FANG), 75, true));
@@ -162,13 +163,13 @@ namespace RPG_Source
 
             alchemistsGarden.ToSouth = alchemistHut;
 
-            guardPost.ToEast = bridge;
+            guardPost.ToEast = spiderField;
             guardPost.ToWest = townSquare;
 
             bridge.ToWest = guardPost;
             bridge.ToEast = spiderField;
 
-            spiderField.ToWest = bridge;
+            spiderField.ToWest = guardPost;
 
             Locations.Add(home);
             Locations.Add(townSquare);

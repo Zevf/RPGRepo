@@ -10,22 +10,30 @@ namespace RPG_Source
     public class Player: Mobs
     {
         public int Gold { get; set; }
-        public int Exp { get; set; }
-        public int Lvl { get; set; }
+        public int Exp { get; private set; }
+        public int Lvl
+        {
+           get { return ((Exp / 10) + 1); }
+        }
         public List<InventoryItem> Inventory { get; set; }
         public List<PlayerQuest> QuestLog { get; set; }
         public Location CurrentLocal { get; set; }
 
         //contructor for player
-        public Player(int mhp, int chp, int gold, int exp, int lvl): base(mhp,chp)
+        public Player(int mhp, int chp, int gold, int exp): base(mhp,chp)
         {
             Gold = gold;
             Exp = exp;
-            Lvl = lvl;
             Inventory = new List<InventoryItem>();
             QuestLog = new List<PlayerQuest>();
         }
 
+        //level up stuff is here
+        public void LevelUp(int levelUp)
+        {
+            Exp += levelUp;
+            MHP = ((Lvl * 2)+ 10);
+        }
         //function for checking if player has key items for entering restricted locations
         public bool HasKeyItem(Location location)
         {

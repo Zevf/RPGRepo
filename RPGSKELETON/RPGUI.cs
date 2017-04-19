@@ -22,7 +22,7 @@ namespace RPGSKELETON
         {
             InitializeComponent();
 
-            _player = new Player(10, 10, 20, 0, 1);
+            _player = new Player(12, 12, 20, 0);
             MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
             _player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_WOODEN_SWORD), 1));
 
@@ -34,7 +34,113 @@ namespace RPGSKELETON
 
         private void buttonUseWeapon_Click(object sender, EventArgs e)
         {
+            // Get the currently selected weapon from the cboWeapons ComboBox
+            Weapon currentWeapon = (Weapon)comboBoxWeapons.SelectedItem;
 
+            // Determine the amount of damage to do to the monster
+            int damageToEnemy = RNG.NumberBetween(currentWeapon.MinDmg, currentWeapon.MaxDmg);
+
+            // Apply the damage to the monster's CurrentHitPoints
+            _currentEnemy.CHP -= damageToEnemy;
+
+            // Display message
+            richTextBoxMessage.Text += "You hit the " + _currentEnemy.Name + " for " + damageToEnemy.ToString() + " points." + Environment.NewLine;
+
+            // Check if the monster is dead
+            if (_currentEnemy.CHP <= 0)
+            {
+                // Monster is dead
+                richTextBoxMessage.Text += Environment.NewLine;
+                richTextBoxMessage.Text += "You defeated the " + _currentEnemy.Name + Environment.NewLine;
+
+                // Give player experience points for killing the monster
+                _player.LevelUp( _currentEnemy.RewardExp);
+                richTextBoxMessage.Text += "You receive " + _currentEnemy.RewardExp.ToString() + " experience points" + Environment.NewLine;
+
+                // Give player gold for killing the monster 
+                _player.Gold += _currentEnemy.RewardG;
+                richTextBoxMessage.Text += "You receive " + _currentEnemy.RewardG.ToString() + " gold" + Environment.NewLine;
+
+                // Get random loot items from the monster
+                List<InventoryItem> lootedItems = new List<InventoryItem>();
+
+                // Add items to the lootedItems list, comparing a random number to the drop percentage
+                foreach (LootItem lootItem in _currentEnemy.RewardItem)
+                {
+                    if (RNG.NumberBetween(1, 100) <= lootItem.DropRate)
+                    {
+                        lootedItems.Add(new InventoryItem(lootItem.Description, 1));
+                    }
+                }
+
+                // If no items were randomly selected, then add the default loot item(s).
+                if (lootedItems.Count == 0)
+                {
+                    foreach (LootItem lootItem in _currentEnemy.RewardItem)
+                    {
+                        if (lootItem.IsDefaultItem)
+                        {
+                            lootedItems.Add(new InventoryItem(lootItem.Description, 1));
+                        }
+                    }
+                }
+
+                // Add the looted items to the player's inventory
+                foreach (InventoryItem inventoryItem in lootedItems)
+                {
+                    _player.AddItemToInventory(inventoryItem.Description);
+
+                    if (inventoryItem.Amount == 1)
+                    {
+                        richTextBoxMessage.Text += "You loot " + inventoryItem.Amount.ToString() + " " + inventoryItem.Description.Name + Environment.NewLine;
+                    }
+                    else
+                    {
+                        richTextBoxMessage.Text += "You loot " + inventoryItem.Amount.ToString() + " " + inventoryItem.Description.Names + Environment.NewLine;
+                    }
+                }
+
+                // Refresh player information and inventory controls
+                HPlabel.Text = _player.CHP.ToString();
+                Goldlabel.Text = _player.Gold.ToString();
+                EXPlabel.Text = _player.Exp.ToString();
+                LevelLable.Text = _player.Lvl.ToString();
+
+                UpdateInventoryListInUI();
+                UpdateWeaponListInUI();
+                UpdatePotionListInUI();
+
+                // Add a blank line to the messages box, just for appearance.
+                richTextBoxMessage.Text += Environment.NewLine;
+
+                // Move player to current location (to heal player and create a new monster to fight)
+                MoveTo(_player.CurrentLocal);
+            }
+            else
+            {
+                // Monster is still alive
+
+                // Determine the amount of damage the monster does to the player
+                int damageToPlayer = RNG.NumberBetween(0, _currentEnemy.MDmg);
+
+                // Display message
+                richTextBoxMessage.Text += "The " + _currentEnemy.Name + " did " + damageToPlayer.ToString() + " points of damage." + Environment.NewLine;
+
+                // Subtract damage from player
+                _player.CHP -= damageToPlayer;
+
+                // Refresh player data in UI
+                HPlabel.Text = _player.CHP.ToString();
+
+                if (_player.CHP <= 0)
+                {
+                    // Display message
+                    richTextBoxMessage.Text += "The " + _currentEnemy.Name + " killed you." + Environment.NewLine;
+
+                    // Move player to "Home"
+                    MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
+                }
+            }
         }
 
         private void buttonNorth_Click(object sender, EventArgs e)
@@ -59,7 +165,55 @@ namespace RPGSKELETON
 
         private void buttonUsePotion_Click(object sender, EventArgs e)
         {
+            // Get the currently selected potion from the combobox
+            Potion potion = (Potion)comboBoxPotions.SelectedItem;
 
+            // Add healing amount to the player's current hit points
+            _player.CHP = (_player.CHP + potion.Heal);
+
+            // CurrentHitPoints cannot exceed player's MaximumHitPoints
+            if (_player.CHP > _player.MHP)
+            {
+                _player.CHP = _player.MHP;
+            }
+
+            // Remove the potion from the player's inventory
+            foreach (InventoryItem ii in _player.Inventory)
+            {
+                if (ii.Description.ID == potion.ID)
+                {
+                    ii.Amount--;
+                    break;
+                }
+            }
+
+            // Display message
+            richTextBoxMessage.Text += "You drink a " + potion.Name + Environment.NewLine;
+
+            // Monster gets their turn to attack
+
+            // Determine the amount of damage the monster does to the player
+            int damageToPlayer = RNG.NumberBetween(0, _currentEnemy.MDmg);
+
+            // Display message
+            richTextBoxMessage.Text += "The " + _currentEnemy.Name + " did " + damageToPlayer.ToString() + " points of damage." + Environment.NewLine;
+
+            // Subtract damage from player
+            _player.CHP -= damageToPlayer;
+
+            if (_player.CHP <= 0)
+            {
+                // Display message
+                richTextBoxMessage.Text += "The " + _currentEnemy.Name + " killed you." + Environment.NewLine;
+
+                // Move player to "Home"
+                MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
+            }
+
+            // Refresh player data in UI
+            HPlabel.Text = _player.CHP.ToString();
+            UpdateInventoryListInUI();
+            UpdatePotionListInUI();
         }
 
         private void MoveTo(Location newLocation)
@@ -124,7 +278,7 @@ namespace RPGSKELETON
                             richTextBoxMessage.Text += newLocation.GetQuest.ItemReward.Name + Environment.NewLine;
                             richTextBoxMessage.Text += Environment.NewLine;
 
-                            _player.Exp += newLocation.GetQuest.ExpReward;
+                            _player.LevelUp(newLocation.GetQuest.ExpReward);
                             _player.Gold += newLocation.GetQuest.GoldReward;
 
                             // Add the reward item to the player's inventory
@@ -303,6 +457,12 @@ namespace RPGSKELETON
 
                 comboBoxPotions.SelectedIndex = 0;
             }
+        }
+
+        private void richTextBoxMessage_TextChanged(object sender, EventArgs e)
+        {
+            richTextBoxMessage.SelectionStart = richTextBoxMessage.Text.Length;
+            richTextBoxMessage.ScrollToCaret();
         }
     }
 }

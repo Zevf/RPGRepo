@@ -217,6 +217,7 @@
             this.richTextBoxMessage.Size = new System.Drawing.Size(360, 286);
             this.richTextBoxMessage.TabIndex = 17;
             this.richTextBoxMessage.Text = "";
+            this.richTextBoxMessage.TextChanged += new System.EventHandler(this.richTextBoxMessage_TextChanged);
             // 
             // richTextBoxLocal
             // 
@@ -264,7 +265,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(878, 634);
+            this.ClientSize = new System.Drawing.Size(878, 654);
             this.Controls.Add(this.dataGridViewQuest);
             this.Controls.Add(this.dataGridViewInventory);
             this.Controls.Add(this.richTextBoxLocal);
